@@ -1,0 +1,26 @@
+body {
+  background-color: #A5D6A7; /* light green */
+  color: #333333; /* dark gray */
+  font-family: sans-serif;
+}
+
+h1, h2, h3 {
+  color: #795548; /* brown */
+}
+
+a {
+  color: #E65100; /* orange */
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  padding: 10px;
+  border: 1px solid #333333; /* dark gray */
+}
+
+td.selected {
+  background-color: #FFB74D; /* orange */
+}
