@@ -1,26 +1,112 @@
 body {
-  background-color: #A5D6A7; /* light green */
-  color: #333333; /* dark gray */
-  font-family: sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: #9bcc50;
 }
 
-h1, h2, h3 {
-  color: #795548; /* brown */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #3a3a3a;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 18px;
+    color: #3a3a3a;
 }
 
 a {
-  color: #E65100; /* orange */
+    color: #ff6600;
 }
 
-table {
-  border-collapse: collapse;
+/* game board */
+
+#game-board {
+    width: 600px;
+    margin: 0 auto;
 }
 
-td {
-  padding: 10px;
-  border: 1px solid #333333; /* dark gray */
+#game-board .board-row {
+    display: flex;
+    justify-content: center;
 }
 
-td.selected {
-  background-color: #FFB74D; /* orange */
+#game-board .board-row .tile {
+    background-color: #a38222;
+    border: 2px solid #754c24;
+    width: 75px;
+    height: 75px;
+    margin: 10px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#game-board .board-row .tile:hover {
+    background-color: #754c24;
+}
+
+#game-board .board-row .tile.matched {
+    background-color: #5f9ea0;
+    border: 2px solid #4682b4;
+    color: #ffffff;
+}
+
+#game-board .board-row .tile.selected {
+    background-color: #f4a460;
+    border: 2px solid #ffa500;
+    color: #ffffff;
+}
+
+#game-board .hand {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#game-board .hand .tile {
+    background-color: #a38222;
+    border: 2px solid #754c24;
+    width: 75px;
+    height: 75px;
+    margin: 10px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#game-board .hand .tile:hover {
+    background-color: #754c24;
+}
+
+#game-board .hand .tile.selected {
+    background-color: #f4a460;
+    border: 2px solid #ffa500;
+    color: #ffffff;
+}
+
+#game-board .hand .tile.disabled {
+    background-color: #8b8b8b;
+    border-color: #3a3a3a;
+    color: #3a3a3a;
+    cursor: default;
 }
