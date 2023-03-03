@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .models import Wizard, ElementTile
+from .forms import GameForm
 
 
 class IndexView(TemplateView):
