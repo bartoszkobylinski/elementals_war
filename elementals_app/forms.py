@@ -33,18 +33,13 @@ class GameForm(forms.Form):
         return cleaned_data
 
 
-class WizardImageForm(forms.Form):
-    wizard_id = forms.IntegerField()
-    image = forms.ImageField()
+class ImageUploadForm(forms.ModelForm):
+    class Meta:
+        model = Wizard
+        fields = ['image']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['wizard_id'].widget = forms.HiddenInput()
 
-    def clean_wizard_id(self):
-        wizard_id = self.cleaned_data['wizard_id']
-        try:
-            wizard = Wizard.objects.get(id=wizard_id)
-        except Wizard.DoesNotExist:
-            raise forms.ValidationError("Wizard does not exist")
-        return wizard_id
+class ElementImageUploadForm(forms.ModelForm):
+    class Meta:
+        model = ElementTile
+        fields = ['image']

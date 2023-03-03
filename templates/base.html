@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-{% load static %}
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Elementals War</title>
 </head>
 <body>
-    <header>
-        <h1>Gigamon</h1>
-        <nav>
-            <ul>
-                <li>Something yet undiscovered</li>
-                <li>Something better yet undiscovered</li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'upload_wizard' %}">Upload Wizard Image</a></li>
+        <li><a href="{% url 'upload_element' %}">Upload Element Image</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
 </body>
 </html>

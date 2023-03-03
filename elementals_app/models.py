@@ -4,6 +4,7 @@ from django.db import models
 class ElementTile(models.Model):
     element_type = models.CharField(max_length=40)
     face_up = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='element_images/', blank=True, null=True)
 
 
 class Wizard(models.Model):

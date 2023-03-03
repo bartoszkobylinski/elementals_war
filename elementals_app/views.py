@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .models import Wizard, ElementTile
-from .forms import GameForm
+from .forms import GameForm, ImageUploadForm, ElementImageUploadForm
 
 
 class IndexView(TemplateView):
@@ -32,17 +32,20 @@ class GameView(FormView):
         # return success response
         return super().form_valid(form)
 
-class UploadWizardImage(View):
-    def get(self, request):
-        form = WizardImageForm()
-        wizards = Wizard.objects.all()
-        return render(request, 'upload_wizard_image.html', {'form': form, 'wizards': wizards})
 
-    def post(self, request):
-        form = WizardImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            wizard_id = form.cleaned_data['wizard_id']
-            wizard = Wizard.objects.get(id=wizard_id)
-            wizard.image = form.cleaned_data['image']
-            wizard.save()
-        return redirect('upload_wizard_image')
+class ImageUploadView(FormView):
+    template_name = 'upload_images.html'
+    form_class = ImageUploadForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.save()
+        return super().form_valid(form)
+
+
+class ElementImageUploadView(FormView):
+    template_name = 'upload_images.html'
+    form_class = ElementImageUploadForm
+
+
