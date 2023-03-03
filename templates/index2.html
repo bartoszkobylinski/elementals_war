@@ -45,7 +45,7 @@
 
     {% else %}
       <p>The game has not yet started.</p>
-      <form method="post" action="{% url 'start_game' %}">
+      <form method="post">
         {% csrf_token %}
         <button type="submit">Start Game</button>
       </form>
