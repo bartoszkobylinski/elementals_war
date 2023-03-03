@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gigamon Game</title>
+  </head>
+  <body>
+    <h1>Welcome to Gigamon!</h1>
+
+    <h2>Rules</h2>
+    <p>The game consists of 7 Wizards and 42 Element tiles. There are 6 types of tiles, each corresponding to a type of Wizard. The game starts with 9 tiles with different elements face down. In their turn, each player flips over two tiles. If the elements match, the player takes them and adds two more tiles to the board, always keeping 9 tiles in play. If a player collects three identical elements, they receive a Wizard of the corresponding type. The first player to collect 3 Wizards wins the game.</p>
+
+    <h2>Current Game State</h2>
+    {% if game_started %}
+      <p>The game has started!</p>
+
+      <h3>Players</h3>
+      <ul>
+        {% for player in players %}
+          <li>{{ player.name }} - Wizards: {{ player.wizards.count }} / 3</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Board</h3>
+      <table>
+        <tr>
+          {% for element in elements %}
+            {% if element.face_down %}
+              <td>
+                <form method="post" action="{% url 'game' %}">
+                  {% csrf_token %}
+                  <input type="checkbox" name="selected_elements" value="{{ element.pk }}">
+                  <button type="submit">Select</button>
+                </form>
+              </td>
+            {% else %}
+              <td>{{ element.element_type }}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </table>
+
+      {% if error_message %}
+        <p>{{ error_message }}</p>
+      {% endif %}
+
+    {% else %}
+      <p>The game has not yet started.</p>
+      <form method="post" action="{% url 'start_game' %}">
+        {% csrf_token %}
+        <button type="submit">Start Game</button>
+      </form>
+    {% endif %}
+  </body>
+</html>
