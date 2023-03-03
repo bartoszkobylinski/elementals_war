@@ -26,11 +26,7 @@
           {% for element in elements %}
             {% if element.face_down %}
               <td>
-                <form method="post" action="{% url 'game' %}">
-                  {% csrf_token %}
-                  <input type="checkbox" name="selected_elements" value="{{ element.pk }}">
-                  <button type="submit">Select</button>
-                </form>
+               <a>something</a>
               </td>
             {% else %}
               <td>{{ element.element_type }}</td>
