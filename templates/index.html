@@ -4,19 +4,19 @@
   <h1>Welcome to Gigamon!</h1>
   <p>Here are the available wizards:</p>
   <ul>
-    {% for wizard in wizards %}
-    <div class="wizard">
-        <h3>{{ wizard.wizard_type }}</h3>
-        {% if wizard.image %}
-            <img src="{{ wizard.image.url }}" alt="{{ wizard.wizard_type }}">
-        {% endif %}
-        <p>Collected: {{ wizard.collected }}</p>
-    </div>
-{% endfor %}
+    <h1>Element Images</h1>
+    {% for element_tile in element_images %}
+      <img src="{{ element_tile.image.url }}" alt="{{ element_tile.element_type }}">
+    {% endfor %}
+
+    <h1>Wizard Images</h1>
+    {% for wizard in wizard_images %}
+      <img src="{{ wizard.image.url }}" alt="{{ wizard.wizard_type }}">
+    {% endfor %}
   </ul>
   <p>Here are the available elements:</p>
   <ul>
-    {% for element in elements %}
+    {% for element in element_images %}
       <li>{{ element }}</li>
     {% empty %}
       <li>No elements available</li>

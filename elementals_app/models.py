@@ -6,11 +6,23 @@ class ElementTile(models.Model):
     face_up = models.BooleanField(default=False)
     image = models.ImageField(upload_to='element_images/', blank=True, null=True)
 
+    def __str__(self):
+        if self.image:
+            return f"{self.element_type} ({self.image.url})"
+        else:
+            return self.element_type
+
 
 class Wizard(models.Model):
     wizard_type = models.CharField(max_length=40)
     collected = models.BooleanField(default=False)
     image = models.ImageField(upload_to='wizard_images/', blank=True, null=True)
+
+    def __str__(self):
+        if self.image:
+            return f"{self.wizard_type} ({self.image.url})"
+        else:
+            return self.wizard_type
 
 
 class Player(models.Model):

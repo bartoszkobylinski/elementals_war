@@ -10,6 +10,16 @@ from .forms import GameForm, ImageUploadForm, ElementImageUploadForm
 class IndexView(TemplateView):
     template_name = 'index.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        element_images = ElementTile.objects.all()
+        wizard_images = Wizard.objects.all()
+
+        context['element_images'] = element_images
+        context['wizard_images'] = wizard_images
+        print(f"hej hej ")
+        print(context)
+
 
 class GameView(FormView):
     template_name = 'game.html'
@@ -43,9 +53,15 @@ class ImageUploadView(FormView):
         obj.save()
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse_lazy("elementals_app:index")
+
 
 class ElementImageUploadView(FormView):
     template_name = 'upload_images.html'
     form_class = ElementImageUploadForm
+
+    def get_success_url(self):
+        return reverse_lazy("elementals_app:index")
 
 
