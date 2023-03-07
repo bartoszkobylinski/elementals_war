@@ -5,6 +5,8 @@ from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .models import Wizard, ElementTile
 from .forms import GameForm, ImageUploadForm, ElementImageUploadForm
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 class IndexView(TemplateView):
@@ -18,7 +20,8 @@ class IndexView(TemplateView):
         context['element_images'] = element_images
         context['wizard_images'] = wizard_images
         print(f"hej hej ")
-        print(context)
+        for x in context['wizard_images']:
+            print(x.image.url)
 
 
 class GameView(FormView):
@@ -43,18 +46,29 @@ class GameView(FormView):
         return super().form_valid(form)
 
 
-class ImageUploadView(FormView):
-    template_name = 'upload_images.html'
-    form_class = ImageUploadForm
-    success_url = reverse_lazy('index')
+class ImageUploadView(View):
+    def get(self, request):
+        return render(request, 'upload_images.html')
 
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.save()
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("elementals_app:index")
+    def post(self, request):
+        print(request)
+        image_file = request.FILES['image_file']
+        image_type = request.POST['image_type']
+        if settings.USE_S3:
+            print("I have used S3 stetting")
+            if image_type == 'element_tile':
+                obj = ElementTile(image=image_file)
+            elif image_type == 'wizard':
+                obj = Wizard(image=image_file)
+            obj.save()
+            image_url = obj.image.url
+        else:
+            fs = FileSystemStorage()
+            filename = fs.save(image_file.name, image_file)
+            image_url = fs.url(filename)
+        return render(request, 'upload_images.html', {
+            'image_url': image_url
+        })
 
 
 class ElementImageUploadView(FormView):
@@ -63,5 +77,3 @@ class ElementImageUploadView(FormView):
 
     def get_success_url(self):
         return reverse_lazy("elementals_app:index")
-
-

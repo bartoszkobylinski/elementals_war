@@ -1,4 +1,6 @@
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
+from django.utils import timezone
 
 
 class ElementTile(models.Model):
@@ -43,3 +45,32 @@ class Game(models.Model):
 
     def __str__(self):
         return f'Game {self.id}'
+
+
+class Element(models.Model):
+    ELEMENT_TYPES = (
+        ('Earth', 'Earth'),
+        ('Air', 'Air'),
+        ('Darkness', 'Darkness'),
+        ('Fire', 'Fire'),
+        ('Lightning', 'Lightning'),
+        ('Water', 'Water')
+    )
+    element_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
+    image = models.ImageField(storage=S3Boto3Storage(bucket='my-elementals-war-bucket'))
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+
+class Entity(models.Model):
+    ELEMENT_TYPES = (
+        ('Earth', 'Earth'),
+        ('Air', 'Air'),
+        ('Darkness', 'Darkness'),
+        ('Fire', 'Fire'),
+        ('Lightning', 'Lightning'),
+        ('Water', 'Water')
+    )
+    element_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
+    image = models.ImageField(storage=S3Boto3Storage(bucket='my-elementals-war-bucket'))
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
