@@ -3,10 +3,12 @@ from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
-from .models import Wizard, ElementTile
-from .forms import GameForm, ImageUploadForm, ElementImageUploadForm
+from .models import Wizard, ElementTile, Element, Entity
+from .forms import GameForm, ImageUploadForm, ElementImageUploadForm, ImageForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django import  forms
+from django.utils import timezone
 
 
 class IndexView(TemplateView):
@@ -45,7 +47,7 @@ class GameView(FormView):
         # return success response
         return super().form_valid(form)
 
-
+'''
 class ImageUploadView(View):
     def get(self, request):
         return render(request, 'upload_images.html')
@@ -70,6 +72,8 @@ class ImageUploadView(View):
             'image_url': image_url
         })
 
+'''
+
 
 class ElementImageUploadView(FormView):
     template_name = 'upload_images.html'
@@ -77,3 +81,31 @@ class ElementImageUploadView(FormView):
 
     def get_success_url(self):
         return reverse_lazy("elementals_app:index")
+
+
+class ImageUploadView(View):
+    form_class = ImageForm
+    template_name = 'image_upload.html'
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            element_images = request.FILES.getlist('element_images')
+            entity_images = request.FILES.getlist('entity_images')
+            element_type = form.cleaned_data['element_type']
+            entity_type = form.cleaned_data['entity_type']
+            for image in element_images:
+                obj = Element(element_type=element_type, image=image)
+                obj.uploaded_at = timezone.now()
+                obj.save()
+            for image in entity_images:
+                obj = Entity(entity_type=entity_type, image=image)
+                obj.uploaded_at = timezone.now()
+                obj.save()
+            #  later add successful redirect
+            form = self.form_class()
+        return render(request, self.template_name, {'form': form})

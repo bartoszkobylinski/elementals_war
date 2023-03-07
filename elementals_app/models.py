@@ -57,7 +57,7 @@ class Element(models.Model):
         ('Water', 'Water')
     )
     element_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
-    image = models.ImageField(storage=S3Boto3Storage(bucket='my-elementals-war-bucket'))
+    image = models.ImageField(storage=S3Boto3Storage())
     uploaded_at = models.DateTimeField(default=timezone.now)
 
 
@@ -71,6 +71,6 @@ class Entity(models.Model):
         ('Water', 'Water')
     )
     element_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
-    image = models.ImageField(storage=S3Boto3Storage(bucket='my-elementals-war-bucket'))
+    image = models.ImageField(storage=S3Boto3Storage())
     uploaded_at = models.DateTimeField(default=timezone.now)
 
