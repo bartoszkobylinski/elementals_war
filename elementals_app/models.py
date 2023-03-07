@@ -70,7 +70,7 @@ class Entity(models.Model):
         ('Lightning', 'Lightning'),
         ('Water', 'Water')
     )
-    element_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
+    entity_type = models.CharField(max_length=20, choices=ELEMENT_TYPES)
     image = models.ImageField(storage=S3Boto3Storage())
     uploaded_at = models.DateTimeField(default=timezone.now)
 
