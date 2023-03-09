@@ -63,6 +63,6 @@ class ImageForm(forms.Form):
         ('Water', 'Water')
     )
     element_type = forms.ChoiceField(choices=ELEMENT_TYPES)
-    entity_tye = forms.ChoiceField(choices=ENTITY_TYPES)
+    entity_type = forms.ChoiceField(choices=ENTITY_TYPES)
     element_images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     entity_images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
