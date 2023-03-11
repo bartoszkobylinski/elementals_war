@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
   <h1>Welcome to Gigamon!</h1>
   <p>Here are the available wizards:</p>
   <ul>
+    <h3>{{ element_images }}</h3>
+    <h4>To sie tutaj cos tam zrobi: {{ context }}</h4>
     <h1>Element Images</h1>
+  <p> {{ element_images }}</p>
     {% for element_tile in element_images %}
       <img src="{{ element_tile.image.url }}" alt="{{ element_tile.element_type }}">
     {% endfor %}
@@ -25,5 +29,4 @@
       <li>No elements available</li>
     {% endfor %}
   </ul>
-  <a>Start a new game</a>
 {% endblock %}

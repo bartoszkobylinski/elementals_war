@@ -12,14 +12,10 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         element_images = Element.objects.all()
-        print(element_images)
         entity_images = Entity.objects.all()
-        print(entity_images)
-
         context['element_images'] = element_images
-        context['wizard_images'] = entity_images
-        for x in context['wizard_images']:
-            print(x.image.url)
+        context['entity_images'] = entity_images
+        return context
 
 
 class ImageUploadView(View):

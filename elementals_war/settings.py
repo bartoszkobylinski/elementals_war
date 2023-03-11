@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os.path
 from pathlib import Path
 
-from django.template.context_processors import media
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -124,16 +122,15 @@ USE_TZ = True
 USE_S3 = os.getenv('USE_S3') == "TRUE"
 
 if USE_S3:
+    print("We're using AWS")
 
     #  AWS Settings
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
-    AWS_STORAGE_BUCKET_NAME = 'elementals-war'
     AWS_DEFAULT_ACL = 'public-read'
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": 'max-age=86400'}
-    AWS_S3_ADDRESSING_STYLE = "virtual"
     #  s3 static settings
     AWS_LOCATION = 'static'
     STATIC_URL = f"https//{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
@@ -147,7 +144,6 @@ if USE_S3:
     PRIVATE_FILE_STORAGE = 'elementals_app.storage_backends.PrivateMediaStorage'
 
 else:
-    print(f"uzywamy jednak tego")
     STATIC_URL = '/staticfiles/'
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
     MEDIA_URL = '/mediafiles/'
