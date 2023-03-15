@@ -1,35 +1,18 @@
-{% extends 'base.html' %}
+<!-- your_template.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Vue App</title>
+  </head>
+  <body>
+    <div id="app">
+      <my-component></my-component>
+    </div>
 
-{% block content %}
-
-<h2>Gigamon Game</h2>
-
-<h3>Current Player: {{ player.name }}</h3>
-
-<div id="board">
-  {% for element in board %}
-  <div class="element {% if element.face_down %}face-down{% endif %}" data-element="{{ element.type }}" data-index="{{ forloop.counter0 }}" data-matched="{{ element.matched }}">
-    {% if not element.face_down %}
-    {{ element.type }}
-    {% endif %}
-  </div>
-  {% endfor %}
-</div>
-
-<h3>Collected Wizards:</h3>
-
-{% for wizard in player.wizards %}
-<div class="wizard {{ wizard.type }}">
-  {{ wizard.type }}
-</div>
-{% endfor %}
-
-<h3>Matched Elements:</h3>
-
-{% for matched_element in player.matched_elements %}
-<div class="element {{ matched_element.type }}">
-  {{ matched_element.type }}
-</div>
-{% endfor %}
-
-{% endblock %}
+    <!-- import Vue app script
+    <script src="{% static 'frontend/dist/js/app.js' %}"></script>
+    -->
+    <script src="{% static 'frontend/app.js' %}"></script>
+  </body>
+</html>

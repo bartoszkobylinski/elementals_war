@@ -1,3 +1,6 @@
+import random
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
@@ -17,6 +20,17 @@ class IndexView(TemplateView):
         context['entity_images'] = entity_images
         return context
 
+
+class GameView(TemplateView):
+    template_name = 'game.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        element_images = Element.objects.all()
+        entity_images = Entity.objects.all()
+        context['element_images'] = element_images
+        context['entity_images'] = entity_images
+        return context
 
 class ImageUploadView(View):
     form_class = ImageForm
@@ -44,3 +58,22 @@ class ImageUploadView(View):
             #  later add successful redirect
             form = self.form_class()
         return render(request, self.template_name, {'form': form})
+
+
+class VueAppView(View):
+    def get(self, request, *args, **kwargs):
+        elements = Element.objects.all()
+        entities = Entity.objects.all()
+        data = {
+            'elements': [{'element_type': e.element_type, 'image_url': e.image.url} for e in elements],
+            'entities': [{'entity_type': e.entity_type, 'image_url': e.image.url} for e in entities]
+        }
+        return JsonResponse(data)
+
+
+class ElementalsWarView(View):
+    def get(self, request, *args, **kwargs):
+        elements = list(Element.objects.values('id', 'element_type', 'image'))
+        random.shuffle(elements)
+        board = [elements[index:index+3] for index in range(0, 9, 3)]
+        return JsonResponse({'board':board})
