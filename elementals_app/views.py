@@ -75,5 +75,6 @@ class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
         elements = list(Element.objects.values('id', 'element_type', 'image'))
         random.shuffle(elements)
+        elements = elements[:9]
         board = [elements[index:index+3] for index in range(0, 9, 3)]
-        return JsonResponse({'board':board})
+        return JsonResponse({'board': board})
