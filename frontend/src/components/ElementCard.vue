@@ -1,15 +1,22 @@
 <template>
   <div class="card" @click="$emit('click')">
-    <img :src="element.flipped ? element.image : 'back.png'" alt="element" />
+    <img :src="element.flipped ? element.image : backImageUrl" alt="element" />
   </div>
 </template>
 
 <script>
+import config from "../../config";
 export default {
-  props: {
-    element: {
-      type: Object,
-      required: true,
+  props: ['element'],
+  data() {
+    return {
+      flipped: false,
+      backImageUrl: config.BACK_IMAGE_URL,
+    };
+  },
+  methods: {
+    flip() {
+      this.flipped = !this.flipped;
     },
   },
 };

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import ElementCard from './ElementCard.vue';
 
 export default {
@@ -20,19 +21,21 @@ export default {
   },
   data() {
     return {
-      elements: [
-        // Replace these placeholders with your element data
-        { id: 1, name: 'air', image: 'air.png', flipped: false },
-        { id: 2, name: 'fire', image: 'fire.png', flipped: false },
-        { id: 3, name: 'water', image: 'water.png', flipped: false },
-        // Add more elements as needed
-      ],
+      elements: [],
     };
   },
   methods: {
     flipCard(index) {
       this.elements[index].flipped = !this.elements[index].flipped;
     },
+  },
+  async created() {
+    try {
+      const response = await axios.get('http://localhost:8000/api/board/');
+      this.elements = response.data;
+    } catch (error) {
+      console.error('Error fetching element data:', error);
+    }
   },
 };
 </script>
@@ -44,3 +47,4 @@ export default {
   grid-gap: 10px;
 }
 </style>
+
