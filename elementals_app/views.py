@@ -1,5 +1,7 @@
 import random
+import json
 
+from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -73,8 +75,15 @@ class VueAppView(View):
 
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
-        elements = list(Element.objects.values('id', 'element_type', 'image'))
+        elements = list(Element.objects.all())
         board_elements = random.choices(elements, k=9)
         random.shuffle(board_elements)
-        board = [board_elements[index:index + 3] for index in range(0, 9, 3)]
-        return JsonResponse({'board': board})
+        # Serialize the elements
+        serialized_elements = serializers.serialize('json', board_elements, fields=('id', 'element_type', 'image'))
+        serialized_board = json.loads(serialized_elements)
+        # Add the full image URL
+        for element, serialized_element in zip(board_elements, serialized_board):
+            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
+        # Reconstruct the board
+        serialized_board = [serialized_board[index:index+3] for index in range(0, 9, 3)]
+        return JsonResponse({'board': serialized_board})
