@@ -32,7 +32,7 @@ export default {
   async created() {
     try {
       const response = await axios.get('http://localhost:8000/api/board/');
-      this.elements = response.data;
+      this.elements = response.data.board.flat();
       console.log(response.data)
     } catch (error) {
       console.error('Error fetching element data:', error);
