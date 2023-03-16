@@ -33,6 +33,7 @@ export default {
     try {
       const response = await axios.get('http://localhost:8000/api/board/');
       this.elements = response.data;
+      console.log(response.data)
     } catch (error) {
       console.error('Error fetching element data:', error);
     }
