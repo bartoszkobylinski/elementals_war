@@ -1,12 +1,9 @@
 <template>
   <div>
     <div class="board">
-      <element-card
-        v-for="(element, index) in elements"
-        :key="index"
-        :element="element"
-        @click="flipCard(index)"
-      />
+      <div class="element-wrapper" v-for="(element, index) in elements" :key="index">
+        <element-card :element="element" @card-click="flipCard(index)" />
+      </div>
     </div>
   </div>
 </template>
@@ -33,7 +30,7 @@ export default {
     try {
       const response = await axios.get('http://localhost:8000/api/board/');
       this.elements = response.data.board.flat();
-      console.log(response.data)
+      console.log(response.data.board)
     } catch (error) {
       console.error('Error fetching element data:', error);
     }
@@ -43,9 +40,12 @@ export default {
 
 <style scoped>
 .board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.element-wrapper {
+  flex-basis: calc(33.333% - 10px);
+  margin-bottom: 10px;
 }
 </style>
-

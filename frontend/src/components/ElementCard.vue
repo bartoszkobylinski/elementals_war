@@ -1,6 +1,6 @@
 <template>
-  <div class="card" @click="$emit('click')">
-    <img :src="element.flipped ? element.image : backImageUrl" alt="element" />
+  <div class="card" @click="$emit('card-click')">
+    <img :src="element.flipped ? element.fields.image : backImageUrl" alt="element" />
   </div>
 </template>
 
@@ -17,6 +17,7 @@ export default {
   methods: {
     flip() {
       this.flipped = !this.flipped;
+      this.$emit("card-click");
     },
   },
 };
