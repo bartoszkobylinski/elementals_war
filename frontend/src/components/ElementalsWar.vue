@@ -40,14 +40,20 @@ export default {
         }, 1000);
       }
     },
-    compareCards() {
+    async compareCards() {
       if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
         this.matchedPairs.push(...this.flippedCards);
-      } else {
-        this.flippedCards.forEach((card) => {
-          card.flipped = false;
-        });
+        // Fetch a new board from the backend
+        try {
+          const response = await this.$http.get('http://localhost:8000/api/board/');
+          this.elements = response.data.board.flat();
+        } catch (error) {
+          console.error('Error fetching new board data:', error);
+        }
       }
+      this.flippedCards.forEach((card) => {
+        card.flipped = false;
+      });
       this.flippedCards = [];
     },
   },
