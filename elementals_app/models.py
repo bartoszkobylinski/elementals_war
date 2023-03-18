@@ -35,3 +35,12 @@ class Entity(models.Model):
 
     def __str__(self):
         return f"{self.entity_type} entity."
+
+
+class Player(models.Model):
+    name = models.CharField(max_length=255)
+    hand = models.ManyToManyField(Element)
+    entities = models.ManyToManyField(Entity)
+
+    def __str__(self):
+        return self.name
