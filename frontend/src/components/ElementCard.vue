@@ -1,5 +1,5 @@
 <template>
-  <div class="card" @click="$emit('card-click')">
+  <div class="card" @click="flip">
     <img :src="element.flipped ? element.fields.image : backImageUrl" alt="element" />
   </div>
 </template>
@@ -8,16 +8,15 @@
 import config from "../../config";
 export default {
   props: ['element'],
+  emits: ['card-click'],
   data() {
     return {
-      flipped: false,
       backImageUrl: config.BACK_IMAGE_URL,
     };
   },
   methods: {
     flip() {
-      this.flipped = !this.flipped;
-      this.$emit("card-click");
+      this.$emit('card-click');
     },
   },
 };

@@ -19,11 +19,36 @@ export default {
   data() {
     return {
       elements: [],
+      flippedCards: [],
+      matchedPairs: [],
     };
   },
   methods: {
     flipCard(index) {
-      this.elements[index].flipped = !this.elements[index].flipped;
+      const card = this.elements[index];
+
+      if (card.flipped || this.flippedCards.includes(card) || this.flippedCards.length === 2) {
+        return;
+      }
+
+      card.flipped = true;
+      this.flippedCards.push(card);
+
+      if (this.flippedCards.length === 2) {
+        setTimeout(() => {
+          this.compareCards();
+        }, 1000);
+      }
+    },
+    compareCards() {
+      if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
+        this.matchedPairs.push(...this.flippedCards);
+      } else {
+        this.flippedCards.forEach((card) => {
+          card.flipped = false;
+        });
+      }
+      this.flippedCards = [];
     },
   },
   async created() {
@@ -42,10 +67,18 @@ export default {
 .board {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
+  width: 70%;
+  margin: 0 auto;
+  border: 1px solid black;
+  padding: 10px;
+  box-sizing: border-box;
 }
 .element-wrapper {
   flex-basis: calc(33.333% - 10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 10px;
 }
 </style>
