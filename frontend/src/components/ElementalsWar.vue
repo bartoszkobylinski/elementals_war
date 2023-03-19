@@ -6,14 +6,15 @@
       </div>
     </div>
     <div class="player-hand">
-      <h3>{{ player.name }}</h3>
-      <div class="player-hand-elements" v-if="player.hand.length > 0">
-        <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
-          <element-card :element="element" />
-        </div>
-      </div>
-      <p v-else>No elements in hand.</p>
+  <h3>{{ player.name }}</h3>
+  <div class="player-hand-elements" v-if="player.hand.length > 0">
+    <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
+      <element-card :element="element" />
+      <img :src="element.fields.image" alt="element" />
     </div>
+  </div>
+  <p v-else>No elements in hand.</p>
+</div>
   </div>
 </template>
 
@@ -76,20 +77,16 @@ export default {
         }, 1000);
       }
     },
-    async updatePlayerHand(elementId) {
+    async updatePlayerHand(element) {
   try {
     const response = await axios.post("http://localhost:8000/api/update_hand/", {
       player_id: this.player.id,
-      element_id: elementId,
+      element_id: element.pk,
     }, {
       withCredentials: true,
     });
     if (response.data.status === 'success') {
-      const element = this.elements.find(e => e.pk === elementId);
       this.player.hand.push(element);
-      const elementCount = this.player.hand.filter(e => e.fields.element_type === element.fields.element_type).length;
-      const playerElementIndex = this.player.hand.findIndex(e => e.pk === elementId);
-      this.$set(this.player.hand[playerElementIndex], 'count', elementCount);
     } else {
       console.error("Error updating player hand:", response.data.message);
     }
@@ -97,26 +94,24 @@ export default {
     console.error('Error updating player hand:', error);
   }
 },
-
     async compareCards() {
-      if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
-        this.matchedPairs.push(...this.flippedCards);
-        const newElementId = this.flippedCards[0].pk;
-        await this.updatePlayerHand(newElementId);
+  if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
+    this.matchedPairs.push(...this.flippedCards);
+    await this.updatePlayerHand(this.flippedCards[0]);
 
-        // Fetch a new board from the backend
-        try {
-          const response = await this.$http.get('http://localhost:8000/api/board/');
-          this.elements = response.data.board.flat();
-        } catch (error) {
-          console.error('Error fetching new board data:', error);
-        }
-      }
-      this.flippedCards.forEach((card) => {
-        card.flipped = false;
-      });
-      this.flippedCards = [];
-    },
+    // Fetch a new board from the backend
+    try {
+      const response = await this.$http.get('http://localhost:8000/api/board/');
+      this.elements = response.data.board.flat();
+    } catch (error) {
+      console.error('Error fetching new board data:', error);
+    }
+  }
+  this.flippedCards.forEach((card) => {
+    card.flipped = false;
+  });
+  this.flippedCards = [];
+},
     getCsrfToken() {
       return csrfToken;
     },
@@ -159,23 +154,30 @@ export default {
 .player-hand {
   margin-top: 20px;
   text-align: center;
+  width: 70%;
+  margin: 0 auto;
 }
 
 .player-hand-elements {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-  padding: 10px;
-  margin: 0 auto;
-  width: 70%;
 }
 
-.element-wrapper {
-  flex-basis: calc(33.333% - 10px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
+.player-hand .element-wrapper {
+  flex-basis: calc(20% - 10px);
+  margin: 5px;
 }
+
+.player-hand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.player-hand p {
+  margin-top: 20px;
+}
+
 </style>
