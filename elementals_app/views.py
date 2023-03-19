@@ -135,3 +135,24 @@ class UpdateHandView(View):
             return JsonResponse({"status": "success", 'message': "Hand updated"})
         except (ValueError, KeyError, Player.DoesNotExist, Element.DoesNotExist):
             return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+
+class ClearHandView(View):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            player_id = data.get('player_id')
+            print(f"to jest player_id: {player_id}")
+            if not player_id:
+                return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+            player = Player.objects.get(pk=player_id)
+            player.hand.clear()
+            player.save()
+            return JsonResponse({'status': 'success', 'message': 'Hand cleared'})
+        except (ValueError, KeyError, Player.DoesNotExist):
+            return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)

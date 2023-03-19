@@ -6,15 +6,16 @@
       </div>
     </div>
     <div class="player-hand">
-  <h3>{{ player.name }}</h3>
-  <div class="player-hand-elements" v-if="player.hand.length > 0">
-    <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
-      <element-card :element="element" />
-      <img :src="element.fields.image" alt="element" />
+      <h3>{{ player.name }}</h3>
+      <div class="player-hand-elements" v-if="player.hand.length > 0">
+        <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
+          <element-card :element="element" />
+          <img :src="element.fields.image" alt="element" />
+        </div>
+        <button @click="clearPlayerHand">Clear Hand</button>
+      </div>
+      <p v-else>No elements in hand.</p>
     </div>
-  </div>
-  <p v-else>No elements in hand.</p>
-</div>
   </div>
 </template>
 
@@ -61,6 +62,25 @@ export default {
     };
   },
   methods: {
+    async clearPlayerHand() {
+      try {
+        console.log("Clearing player hand....", this.player.id)
+        const response = await axios.post("http://localhost:8000/api/clear_hand/", {
+          player_id: this.player.id,
+          },
+            {
+            withCredentials: true,
+          });
+        console.log("Response:", response.data)
+        if (response.data.status === 'success') {
+          this.player.hand = [];
+        } else {
+          console.error("Error clearing player hand:", response.data.message);
+        }
+      } catch (error) {
+        console.error('Error clearing player hand:', error);
+        }
+      },
     flipCard(index) {
       const card = this.elements[index];
 

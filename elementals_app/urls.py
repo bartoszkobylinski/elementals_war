@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IndexView, ImageUploadView, GameView, VueAppView, ElementalsWarView, UpdateHandView
+from .views import IndexView, ImageUploadView, GameView, VueAppView, ElementalsWarView, UpdateHandView, ClearHandView
 
 app_name = 'elementals_app'
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('vue_app/', VueAppView.as_view(), name='vue'),
     path('api/board/', ElementalsWarView.as_view(), name='elementals_war_board'),
     path('api/update_hand/', UpdateHandView.as_view(), name='update_hand'),
+    path('api/clear_hand/', ClearHandView.as_view(), name='clear_hand'),
 ]
