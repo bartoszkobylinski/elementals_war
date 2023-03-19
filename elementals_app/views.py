@@ -94,9 +94,12 @@ class ElementalsWarView(View):
 
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
-
         # Fetch the player instance (you can change this to fetch the correct player)
         player = Player.objects.first()
+
+        # Serialize the player
+        serialized_player = serializers.serialize('json', [player], fields=('name', 'hand'))
+        serialized_player = json.loads(serialized_player)[0]
 
         # Serialize the player's hand
         serialized_hand = serializers.serialize('json', player.hand.all(), fields=('id', 'element_type', 'image'))
@@ -105,6 +108,9 @@ class ElementalsWarView(View):
         # Add the full image URL to the player's hand elements
         for element, serialized_element in zip(player.hand.all(), serialized_hand):
             serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
+
+        # Update the player object with the serialized hand
+        serialized_player['fields']['hand'] = serialized_hand
 
         # Fetch the elements for the board
         elements = list(Element.objects.all())
@@ -122,4 +128,5 @@ class ElementalsWarView(View):
         # Reconstruct the board
         serialized_board = [serialized_board[index:index + 3] for index in range(0, 9, 3)]
 
-        return JsonResponse({'board': serialized_board,'hand': serialized_hand})
+        return JsonResponse({'board': serialized_board, 'player': serialized_player})
+
