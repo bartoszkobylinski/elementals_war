@@ -74,24 +74,6 @@ class VueAppView(View):
         return JsonResponse(data)
 
 
-'''
-class ElementalsWarView(View):
-    def get(self, request, *args, **kwargs):
-        elements = list(Element.objects.all())
-        board_elements = random.choices(elements, k=9)
-        random.shuffle(board_elements)
-        # Serialize the elements
-        serialized_elements = serializers.serialize('json', board_elements, fields=('id', 'element_type', 'image'))
-        serialized_board = json.loads(serialized_elements)
-        # Add the full image URL
-        for element, serialized_element in zip(board_elements, serialized_board):
-            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
-        # Reconstruct the board
-        serialized_board = [serialized_board[index:index+3] for index in range(0, 9, 3)]
-        return JsonResponse({'board': serialized_board})
-'''
-
-
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
         # Fetch the player instance (you can change this to fetch the correct player)
@@ -129,4 +111,18 @@ class ElementalsWarView(View):
         serialized_board = [serialized_board[index:index + 3] for index in range(0, 9, 3)]
 
         return JsonResponse({'board': serialized_board, 'player': serialized_player})
+
+class UpdateHandView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        player_id = data.get('player_id')
+        new_element_id = data.get('element_id')
+        if not (player_id and new_element_id):
+            return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+        player = Player.objects.get(pk=player_id)
+        new_element = Element.objects.get(pk=new_element_id)
+        player.hand.add(new_element)
+        player.save()
+        return JsonResponse({"status": "success", 'message': "Hand updated"})
 

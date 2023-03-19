@@ -5,7 +5,12 @@
 </template>
 
 <script>
+import ElementalsWar from "@/components/ElementalsWar.vue";
+
 export default {
+  components: {
+    'elementals-war': ElementalsWar,
+  },
   name: 'App',
 };
 </script>

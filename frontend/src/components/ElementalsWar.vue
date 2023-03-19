@@ -27,6 +27,7 @@ export default {
     ElementCard,
   },
   data() {
+    console.log("ElementalsWar data function called")
     return {
       elements: [],
       player: {
@@ -54,9 +55,27 @@ export default {
         }, 1000);
       }
     },
+    async updatePlayerHand(elementId) {
+      try {
+        const response = await axios.post("http://localhost:8000/api/update_hand/", {
+          player_id: this.player.id,
+          element_id: elementId,
+        });
+        if (response.data.status === 'success') {
+          this.player.hand.push(elementId);
+        } else {
+          console.error("Error updating player hand:", response.data.message);
+        }
+      } catch (error) {
+        console.error('Error updating player hand:', error);
+      }
+    },
     async compareCards() {
       if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
         this.matchedPairs.push(...this.flippedCards);
+        const newElementId = this.flippedCards[0].pk;
+        await this.updatePlayerHand(newElementId);
+
         // Fetch a new board from the backend
         try {
           const response = await this.$http.get('http://localhost:8000/api/board/');
@@ -72,17 +91,18 @@ export default {
     },
   },
   async created() {
-    try {
-      const response = await axios.get('http://localhost:8000/api/board/');
-      this.elements = response.data.board.flat();
-      this.player.name = response.data.player.fields.name;
-      this.player.hand = response.data.player.fields.hand;
-      console.log(response.data)
-    } catch (error) {
-      console.error('Error fetching element data:', error);
-    }
-  },
-};
+      console.log("mounted() method called")
+      try {
+        const response = await axios.get('http://localhost:8000/api/board/');
+        this.elements = response.data.board.flat();
+        this.player.name = response.data.player.fields.name;
+        this.player.hand = response.data.player.fields.hand;
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching element data:', error);
+      }
+    },
+}
 </script>
 
 <style scoped>
