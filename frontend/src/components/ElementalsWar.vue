@@ -77,22 +77,27 @@ export default {
       }
     },
     async updatePlayerHand(elementId) {
-      try {
-        const response = await axios.post("http://localhost:8000/api/update_hand/", {
-          player_id: this.player.id,
-          element_id: elementId,
-            }, {
-          withCredentials: true,
-            });
-        if (response.data.status === 'success') {
-          this.player.hand.push(elementId);
-        } else {
-          console.error("Error updating player hand:", response.data.message);
-        }
-      } catch (error) {
-        console.error('Error updating player hand:', error);
-        }
-    },
+  try {
+    const response = await axios.post("http://localhost:8000/api/update_hand/", {
+      player_id: this.player.id,
+      element_id: elementId,
+    }, {
+      withCredentials: true,
+    });
+    if (response.data.status === 'success') {
+      const element = this.elements.find(e => e.pk === elementId);
+      this.player.hand.push(element);
+      const elementCount = this.player.hand.filter(e => e.fields.element_type === element.fields.element_type).length;
+      const playerElementIndex = this.player.hand.findIndex(e => e.pk === elementId);
+      this.$set(this.player.hand[playerElementIndex], 'count', elementCount);
+    } else {
+      console.error("Error updating player hand:", response.data.message);
+    }
+  } catch (error) {
+    console.error('Error updating player hand:', error);
+  }
+},
+
     async compareCards() {
       if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
         this.matchedPairs.push(...this.flippedCards);
