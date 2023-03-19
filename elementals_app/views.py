@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
-from .models import Element, Entity
+from .models import Element, Entity, Player
 from .forms import ImageForm
 from django.utils import timezone
 
@@ -33,6 +33,7 @@ class GameView(TemplateView):
         context['element_images'] = element_images
         context['entity_images'] = entity_images
         return context
+
 
 class ImageUploadView(View):
     form_class = ImageForm
@@ -73,6 +74,7 @@ class VueAppView(View):
         return JsonResponse(data)
 
 
+'''
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
         elements = list(Element.objects.all())
@@ -87,3 +89,37 @@ class ElementalsWarView(View):
         # Reconstruct the board
         serialized_board = [serialized_board[index:index+3] for index in range(0, 9, 3)]
         return JsonResponse({'board': serialized_board})
+'''
+
+
+class ElementalsWarView(View):
+    def get(self, request, *args, **kwargs):
+
+        # Fetch the player instance (you can change this to fetch the correct player)
+        player = Player.objects.first()
+
+        # Serialize the player's hand
+        serialized_hand = serializers.serialize('json', player.hand.all(), fields=('id', 'element_type', 'image'))
+        serialized_hand = json.loads(serialized_hand)
+
+        # Add the full image URL to the player's hand elements
+        for element, serialized_element in zip(player.hand.all(), serialized_hand):
+            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
+
+        # Fetch the elements for the board
+        elements = list(Element.objects.all())
+        board_elements = random.choices(elements, k=9)
+        random.shuffle(board_elements)
+
+        # Serialize the board elements
+        serialized_elements = serializers.serialize('json', board_elements, fields=('id', 'element_type', 'image'))
+        serialized_board = json.loads(serialized_elements)
+
+        # Add the full image URL to the board elements
+        for element, serialized_element in zip(board_elements, serialized_board):
+            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
+
+        # Reconstruct the board
+        serialized_board = [serialized_board[index:index + 3] for index in range(0, 9, 3)]
+
+        return JsonResponse({'board': serialized_board,'hand': serialized_hand})

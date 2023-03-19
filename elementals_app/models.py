@@ -38,9 +38,9 @@ class Entity(models.Model):
 
 
 class Player(models.Model):
-    name = models.CharField(max_length=255)
-    hand = models.ManyToManyField(Element)
-    entities = models.ManyToManyField(Entity)
+    name = models.CharField(max_length=100)
+    elements = models.ManyToManyField(Element, blank=True)
+    entities = models.ManyToManyField(Entity, blank=True)
 
     def __str__(self):
         return self.name
