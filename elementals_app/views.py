@@ -120,14 +120,18 @@ class UpdateHandView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        player_id = data.get('player_id')
-        new_element_id = data.get('element_id')
-        if not (player_id and new_element_id):
-            return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+        try:
+            data = json.loads(request.body)
+            player_id = data.get('player_id')
+            new_element_id = data.get('element_id')
+            print(f"this is data: {data}")
+            if not (player_id and new_element_id):
+                return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
 
-        player = Player.objects.get(pk=player_id)
-        new_element = Element.objects.get(pk=new_element_id)
-        player.hand.add(new_element)
-        player.save()
-        return JsonResponse({"status": "success", 'message': "Hand updated"})
+            player = Player.objects.get(pk=player_id)
+            new_element = Element.objects.get(pk=new_element_id)
+            player.hand.add(new_element)
+            player.save()
+            return JsonResponse({"status": "success", 'message': "Hand updated"})
+        except (ValueError, KeyError, Player.DoesNotExist, Element.DoesNotExist):
+            return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)

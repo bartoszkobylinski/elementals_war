@@ -51,6 +51,7 @@ export default {
     return {
       elements: [],
       player: {
+        id: null,
         name: '',
         hand: [],
       },
@@ -120,6 +121,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:8000/api/board/');
         this.elements = response.data.board.flat();
+        this.player.id = response.data.player.pk;
         this.player.name = response.data.player.fields.name;
         this.player.hand = response.data.player.fields.hand;
         console.log(response.data)
