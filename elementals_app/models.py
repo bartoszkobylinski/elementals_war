@@ -39,7 +39,7 @@ class Entity(models.Model):
 
 class Player(models.Model):
     name = models.CharField(max_length=100)
-    elements = models.ManyToManyField(Element, blank=True)
+    hand = models.ManyToManyField(Element, blank=True, related_name='players_holding')
     entities = models.ManyToManyField(Entity, blank=True)
 
     def __str__(self):
