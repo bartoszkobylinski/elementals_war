@@ -9,5 +9,5 @@ urlpatterns = [
     path('game/', GameView.as_view(), name='game'),
     path('vue_app/', VueAppView.as_view(), name='vue'),
     path('api/board/', ElementalsWarView.as_view(), name='elementals_war_board'),
-    path('api/update_hand/', UpdateHandView.as_view(), name='update_hand')
+    path('api/update_hand/', UpdateHandView.as_view(), name='update_hand'),
 ]

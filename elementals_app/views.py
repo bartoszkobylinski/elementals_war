@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
 from .models import Element, Entity, Player
 from .forms import ImageForm
 from django.utils import timezone
@@ -112,7 +113,12 @@ class ElementalsWarView(View):
 
         return JsonResponse({'board': serialized_board, 'player': serialized_player})
 
+
 class UpdateHandView(View):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         player_id = data.get('player_id')
@@ -125,4 +131,3 @@ class UpdateHandView(View):
         player.hand.add(new_element)
         player.save()
         return JsonResponse({"status": "success", 'message': "Hand updated"})
-

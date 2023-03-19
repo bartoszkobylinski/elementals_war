@@ -53,8 +53,27 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 
+'''
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",  # Vue.js app
+    "http://localhost:8080",
+]
+'''
+CORS_ALLOW_ALL_ORIGINS = True
+
+#  check settings after final accept before deploying
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 ROOT_URLCONF = 'elementals_war.urls'
@@ -160,4 +179,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_DOMAIN = ".localhost"
+SESSION_COOKIE_DOMAIN = ".localhost"

@@ -19,8 +19,28 @@
 
 
 <script>
+import ElementCard from "@/components/ElementCard.vue";
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    let cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 import axios from 'axios';
-import ElementCard from './ElementCard.vue';
+
+const csrfToken = getCookie('csrftoken');
+axios.defaults.headers.common['X-CSRFToken'] = getCookie('csrfToken');
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export default {
   components: {
@@ -60,7 +80,9 @@ export default {
         const response = await axios.post("http://localhost:8000/api/update_hand/", {
           player_id: this.player.id,
           element_id: elementId,
-        });
+            }, {
+          withCredentials: true,
+            });
         if (response.data.status === 'success') {
           this.player.hand.push(elementId);
         } else {
@@ -68,7 +90,7 @@ export default {
         }
       } catch (error) {
         console.error('Error updating player hand:', error);
-      }
+        }
     },
     async compareCards() {
       if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
@@ -88,6 +110,9 @@ export default {
         card.flipped = false;
       });
       this.flippedCards = [];
+    },
+    getCsrfToken() {
+      return csrfToken;
     },
   },
   async created() {
