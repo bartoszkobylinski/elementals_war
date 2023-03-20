@@ -7,9 +7,21 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
 from .models import Element, Entity, Player
 from .forms import ImageForm
 from django.utils import timezone
+
+
+def serialize_board(board_elements, request):
+    serialized_elements = serializers.serialize('json', board_elements, fields=('id', 'element_type', 'image'))
+    serialized_board = json.loads(serialized_elements)
+
+    for element, serialized_element in zip(board_elements, serialized_board):
+        serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
+
+    serialized_board = [serialized_board[index:index + 3] for index in range(0, 9, 3)]
+    return serialized_board
 
 
 class IndexView(TemplateView):
@@ -77,39 +89,23 @@ class VueAppView(View):
 
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
-        # Fetch the player instance (you can change this to fetch the correct player)
         player = Player.objects.first()
+        serialized_player = player.serialize(request)
 
-        # Serialize the player
-        serialized_player = serializers.serialize('json', [player], fields=('name', 'hand'))
-        serialized_player = json.loads(serialized_player)[0]
+        if cache.get('stack'):
+            stack = cache.get('stack')
+        else:
+            stack = [element for _ in range(7) for element in Element.objects.all()]
+            cache.set('stack', stack)
 
-        # Serialize the player's hand
-        serialized_hand = serializers.serialize('json', player.hand.all(), fields=('id', 'element_type', 'image'))
-        serialized_hand = json.loads(serialized_hand)
+        if len(stack) >= 9:
+            board_elements = random.sample(stack, k=9)
+            stack = [element for element in stack if element not in board_elements]
+        else:
+            board_elements = [Element.objects.filter(element_type='empty').first() for _ in range(9)]
 
-        # Add the full image URL to the player's hand elements
-        for element, serialized_element in zip(player.hand.all(), serialized_hand):
-            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
-
-        # Update the player object with the serialized hand
-        serialized_player['fields']['hand'] = serialized_hand
-
-        # Fetch the elements for the board
-        elements = list(Element.objects.all())
-        board_elements = random.choices(elements, k=9)
-        random.shuffle(board_elements)
-
-        # Serialize the board elements
-        serialized_elements = serializers.serialize('json', board_elements, fields=('id', 'element_type', 'image'))
-        serialized_board = json.loads(serialized_elements)
-
-        # Add the full image URL to the board elements
-        for element, serialized_element in zip(board_elements, serialized_board):
-            serialized_element['fields']['image'] = request.build_absolute_uri(element.image.url)
-
-        # Reconstruct the board
-        serialized_board = [serialized_board[index:index + 3] for index in range(0, 9, 3)]
+        serialized_board = serialize_board(board_elements, request)
+        cache.set('stack', stack)
 
         return JsonResponse({'board': serialized_board, 'player': serialized_player})
 
