@@ -19,7 +19,6 @@
   </div>
 </template>
 
-
 <script>
 import ElementCard from "@/components/ElementCard.vue";
 
@@ -47,7 +46,7 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 export default {
   components: {
     ElementCard,
-  },
+    },
   data() {
     console.log("ElementalsWar data function called")
     return {
@@ -98,35 +97,36 @@ export default {
       }
     },
     async updatePlayerHand(element) {
-  try {
-    const response = await axios.post("http://localhost:8000/api/update_hand/", {
-      player_id: this.player.id,
-      element_id: element.pk,
-    }, {
-      withCredentials: true,
-    });
-    if (response.data.status === 'success') {
-      this.player.hand.push(element);
-    } else {
-      console.error("Error updating player hand:", response.data.message);
-    }
-  } catch (error) {
-    console.error('Error updating player hand:', error);
-  }
-},
+      try {
+        const response = await axios.post("http://localhost:8000/api/update_hand/", {
+          player_id: this.player.id,
+          element_id: element.pk,
+            }, {
+              withCredentials: true,
+            });
+        if (response.data.status === 'success') {
+          this.player.hand.push(element);
+        } else {
+          console.error("Error updating player hand:", response.data.message);
+          }
+      } catch (error) {
+        console.error('Error updating player hand:', error);
+        }
+      },
     async compareCards() {
-  if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
-    this.matchedPairs.push(...this.flippedCards);
-    await this.updatePlayerHand(this.flippedCards[0]);
+      if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
+        this.matchedPairs.push(...this.flippedCards);
+        for (const card of this.flippedCards) {
+          await this.updatePlayerHand(card);
+          }
 
-    // Fetch a new board from the backend
-    try {
-      const response = await this.$http.get('http://localhost:8000/api/board/');
-      this.elements = response.data.board.flat();
-    } catch (error) {
-      console.error('Error fetching new board data:', error);
-    }
-  }
+      try {
+        const response = await this.$http.get('http://localhost:8000/api/board/');
+        this.elements = response.data.board.flat();
+        } catch (error) {
+          console.error('Error fetching new board data:', error);
+          }
+      }
   this.flippedCards.forEach((card) => {
     card.flipped = false;
   });
@@ -134,8 +134,8 @@ export default {
 },
     getCsrfToken() {
       return csrfToken;
+      },
     },
-  },
   async created() {
       console.log("mounted() method called")
       try {
@@ -149,7 +149,7 @@ export default {
         console.error('Error fetching element data:', error);
       }
     },
-}
+  }
 </script>
 
 <style scoped>
