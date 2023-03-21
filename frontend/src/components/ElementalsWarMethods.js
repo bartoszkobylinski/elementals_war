@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const csrfToken=getCookie('csrftoken')
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -94,23 +95,48 @@ function getCsrfToken() {
       return csrfToken;
       }
 
-function groupedEntities() {
-    const grouped = this.player.hand.reduce((acc, element) => {
-      acc[element.fields.element_type] = (acc[element.fields.element_type] || 0) + 1;
-      return acc;
-    }, {});
+async function groupedEntities() {
+  const grouped = this.player.hand.reduce((acc, element) => {
+    acc[element.fields.element_type] = (acc[element.fields.element_type] || 0) + 1;
+    return acc;
+  }, {});
 
-    return Object.entries(grouped)
-      .filter(([_, count]) => count >= 3)
-      .map(([entityType]) => {
+  const entities = await Promise.all(
+    Object.entries(grouped)
+      .filter(([, count]) => count >= 3)
+      .map(async ([entityType]) => {
+        const imageURL = await fetchEntityImageURL(entityType);
         return {
           fields: {
             entity_type: entityType,
-            image: `path/to/entity/image/${entityType}.jpg`, // Replace this with the actual image path
+            image: imageURL,
           },
         };
-      });
+      })
+  );
+
+  return entities;
+}
+
+
+async function fetchEntityImageURL(entityType) {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/entity_image/${entityType}/`);
+    if (Array.isArray(response.data)) {
+      const entity = response.data[0];
+      console.log("heeeeej")
+      console.log(entity)
+      return entity.image_url;
+    } else {
+      return response.data.image_url;
+    }
+  } catch (error) {
+    console.error('Error fetching entity image URL:', error);
+    return null;
   }
+}
+
+
 
 export {
     getCookie,

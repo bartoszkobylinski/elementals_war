@@ -1,7 +1,7 @@
 import random
 import json
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, Http404
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,7 @@ from django.core.cache import cache
 from .models import Element, Entity, Player
 from .forms import ImageForm
 from django.utils import timezone
-from helpers import serialize_board
+from .helpers import serialize_board
 
 
 class IndexView(TemplateView):
@@ -98,6 +98,8 @@ class ElementalsWarView(View):
         return JsonResponse({'board': serialized_board, 'player': serialized_player})
 
 
+
+
 class UpdateHandView(View):
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
@@ -140,3 +142,15 @@ class ClearHandView(View):
             return JsonResponse({'status': 'success', 'message': 'Hand cleared'})
         except (ValueError, KeyError, Player.DoesNotExist):
             return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+
+class EntityImageView(View):
+    def get(self, request, entity_type, *args, **kwargs):
+        print(f"EntityImageView endpoint reached for entity_type: {entity_type}")
+        entity = Entity.objects.filter(entity_type=entity_type).first()
+        if entity:
+            image_url = request.build_absolute_uri(entity.image.url)
+            print(image_url)
+            return JsonResponse({'image_url': image_url})
+        else:
+            raise Http404("Entity not found")

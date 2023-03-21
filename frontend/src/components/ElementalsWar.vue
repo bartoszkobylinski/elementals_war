@@ -14,12 +14,12 @@
         </div>
         <button @click="clearPlayerHand">Clear Hand</button>
       </div>
+      <p v-else>No elements in hand.</p>
       <div class="player-hand-entities">
         <div class="entity-wrapper" v-for="(entity, index) in groupedEntities" :key="'entity-' + index">
           <entity-card :entity="entity" />
         </div>
       </div>
-      <p v-else>No elements in hand.</p>
     </div>
   </div>
 </template>
@@ -38,10 +38,8 @@ import {
   compareCards,
   getCsrfToken,
   groupedEntities,
-  getCookie} from "@/components/ElementalsWarMethods";
+  } from "@/components/ElementalsWarMethods";
 
-const csrfToken = getCookie('csrftoken');
-axios.defaults.headers.common['X-CSRFToken'] = getCookie('csrfToken');
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export default {
@@ -70,7 +68,9 @@ export default {
     getCsrfToken,
     },
   computed: {
-  groupedEntities,
+  groupedEntities() {
+    return groupedEntities.call(this);
+  },
 },
 
   async created() {
