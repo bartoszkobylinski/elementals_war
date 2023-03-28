@@ -11,7 +11,7 @@
         <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
           <element-card :element="element" size="small" />
           <img :src="element.fields.image" alt="element" />
-          <input type="checkbox" :value="element" v-model="selectCards" :id="`element-${index}`">
+          <input type="checkbox" :value="index" v-model="selectedCards" :id="`element-${index}`">
           <label :for="`element-${index}`"></label>
         </div>
         <button @click="clearPlayerHand">Clear Hand</button>
@@ -20,8 +20,8 @@
       <div class="player-hand-entities">
         <div class="entity-wrapper" v-for="(entity, index) in groupedEntities" :key="'entity-' + index">
           <entity-card :entity_type="entity.entity_type" :image="entity.image" />
-          <button @click="exchangeCards">Exchange Cards</button>
         </div>
+        <button @click="exchangeCards">Exchange Cards</button>
       </div>
     </div>
   </div>
@@ -62,6 +62,7 @@ export default {
       },
       flippedCards: [],
       matchedPairs: [],
+      selectedCards: [],
     };
   },
   methods: {
