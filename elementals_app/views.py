@@ -54,8 +54,10 @@ class ImageUploadView(View):
 
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
-        player = Player.objects.first()
+        player = Player.objects.filter(is_computer=False).first()
+        computer = Player.objects.filter(is_computer=True).first()
         serialized_player = player.serialize(request)
+        serialized_computer = computer.serialize(request) if computer else None
 
         if cache.get('stack'):
             stack = cache.get('stack')
@@ -72,7 +74,7 @@ class ElementalsWarView(View):
         serialized_board = serialize_board(board_elements, request)
         cache.set('stack', stack)
 
-        return JsonResponse({'board': serialized_board, 'player': serialized_player})
+        return JsonResponse({'board': serialized_board, 'player': serialized_player, 'computer': serialized_computer})
 
 
 class UpdateHandView(View):

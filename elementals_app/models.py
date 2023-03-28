@@ -43,6 +43,7 @@ class Player(models.Model):
     name = models.CharField(max_length=100)
     hand = models.ManyToManyField(Element, blank=True, related_name='players_holding')
     entities = models.ManyToManyField(Entity, blank=True)
+    is_computer = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
