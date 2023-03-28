@@ -1,5 +1,5 @@
 <template>
-  <div className="entity-card">
+  <div class="entity-card" @click="handleClick">
     <img :src="image" alt="entity"/>
   </div>
 </template>
@@ -7,6 +7,11 @@
 <script>
 export default {
   props: ["entity_type", "image"],
+  methods: {
+    handleClick() {
+      this.$emit("entity-click",this.entity_type)
+    },
+  },
 };
 </script>
 

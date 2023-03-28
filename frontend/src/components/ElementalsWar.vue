@@ -11,6 +11,8 @@
         <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
           <element-card :element="element" size="small" />
           <img :src="element.fields.image" alt="element" />
+          <input type="checkbox" :value="element" v-model="selectCards" :id="`element-${index}`">
+          <label :for="`element-${index}`"></label>
         </div>
         <button @click="clearPlayerHand">Clear Hand</button>
       </div>
@@ -18,6 +20,7 @@
       <div class="player-hand-entities">
         <div class="entity-wrapper" v-for="(entity, index) in groupedEntities" :key="'entity-' + index">
           <entity-card :entity_type="entity.entity_type" :image="entity.image" />
+          <button @click="exchangeCards">Exchange Cards</button>
         </div>
       </div>
     </div>
@@ -38,6 +41,7 @@ import {
   compareCards,
   getCsrfToken,
   groupedEntities,
+    exchangeCards,
   } from "@/components/ElementalsWarMethods";
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -66,6 +70,7 @@ export default {
     updatePlayerHand,
     compareCards,
     getCsrfToken,
+    exchangeCards,
     },
   computed: {
   groupedEntities() {
@@ -102,11 +107,11 @@ export default {
   box-sizing: border-box;
 }
 .element-wrapper {
-  flex-basis: calc(33.333% - 10px);
+  flex-basis: calc(33.33% - 10px);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .player-hand {
@@ -124,7 +129,7 @@ export default {
 
 .player-hand .element-wrapper {
   flex-basis: calc(10% - 10px);
-  margin: 5px;
+  margin: 15px;
 }
 
 .player-hand img {

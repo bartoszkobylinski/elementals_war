@@ -118,6 +118,21 @@ async function groupedEntities() {
   return entities;
 }
 
+async function exchangeCards() {
+    if (this.selectedCards.length !==3){
+        alert("Please select exactly 3 cards to exchange.");
+        return;
+    }
+    const elementType = this.selectedCards[0].fields.element_type;
+    if (!this.selectedCards.every((card)=> card.fields.element_type === elementType)) {
+        alert("Please select 3 cards of the same element type.");
+        return;
+    }
+    this.player.hand = this.player.hand.filter((card) => !this.selectedCards.includes(card));
+    const imageURL = await fetchEntityImageURL(elementType);
+    this.player.hand.push({fields: {image: imageURL, entity_type: elementType}});
+}
+
 async function fetchEntityImageURL(entityType) {
     console.log('groupedEntities called');
   try {
@@ -144,4 +159,5 @@ export {
     compareCards,
     getCsrfToken,
     groupedEntities,
+    exchangeCards,
 };
