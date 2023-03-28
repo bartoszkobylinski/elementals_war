@@ -1,12 +1,12 @@
 <template>
-  <div class="entity-card">
-    <img :src="entity.fields.image" alt="entity" />
+  <div className="entity-card">
+    <img :src="image" alt="entity"/>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["entity"],
+  props: ["entity_type", "image"],
 };
 </script>
 
@@ -15,6 +15,7 @@ export default {
   width: 100px;
   height: 100px;
 }
+
 .entity-card img {
   width: 100%;
   height: 100%;

@@ -105,21 +105,21 @@ async function groupedEntities() {
     Object.entries(grouped)
       .filter(([, count]) => count >= 3)
       .map(async ([entityType]) => {
-        const imageURL = await fetchEntityImageURL(entityType);
-        return {
-          fields: {
+          console.log('Fetching entity image URL for:', entityType);
+          const imageURL = await fetchEntityImageURL(entityType);
+          console.log('Entity image URL:', imageURL);
+          return {
             entity_type: entityType,
             image: imageURL,
-          },
-        };
+          };
       })
   );
 
   return entities;
 }
 
-
 async function fetchEntityImageURL(entityType) {
+    console.log('groupedEntities called');
   try {
     const response = await axios.get(`http://localhost:8000/api/entity_image/${entityType}/`);
     if (Array.isArray(response.data)) {
@@ -135,8 +135,6 @@ async function fetchEntityImageURL(entityType) {
     return null;
   }
 }
-
-
 
 export {
     getCookie,

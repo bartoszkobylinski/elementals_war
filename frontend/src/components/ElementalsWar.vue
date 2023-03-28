@@ -9,7 +9,7 @@
       <h3>{{ player.name }}</h3>
       <div class="player-hand-elements" v-if="player.hand.length > 0">
         <div class="element-wrapper" v-for="(element, index) in player.hand" :key="index">
-          <element-card :element="element" />
+          <element-card :element="element" size="small" />
           <img :src="element.fields.image" alt="element" />
         </div>
         <button @click="clearPlayerHand">Clear Hand</button>
@@ -17,7 +17,7 @@
       <p v-else>No elements in hand.</p>
       <div class="player-hand-entities">
         <div class="entity-wrapper" v-for="(entity, index) in groupedEntities" :key="'entity-' + index">
-          <entity-card :entity="entity" />
+          <entity-card :entity_type="entity.entity_type" :image="entity.image" />
         </div>
       </div>
     </div>
@@ -69,6 +69,7 @@ export default {
     },
   computed: {
   groupedEntities() {
+    console.log('groupedEntities computed property called')
     return groupedEntities.call(this);
   },
 },
@@ -94,7 +95,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  width: 70%;
+  width: 45%;
   margin: 0 auto;
   border: 1px solid black;
   padding: 10px;
@@ -122,7 +123,7 @@ export default {
 }
 
 .player-hand .element-wrapper {
-  flex-basis: calc(20% - 10px);
+  flex-basis: calc(10% - 10px);
   margin: 5px;
 }
 
