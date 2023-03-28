@@ -24,18 +24,6 @@ class IndexView(TemplateView):
         return context
 
 
-class GameView(TemplateView):
-    template_name = 'game.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        element_images = Element.objects.all()
-        entity_images = Entity.objects.all()
-        context['element_images'] = element_images
-        context['entity_images'] = entity_images
-        return context
-
-
 class ImageUploadView(View):
     form_class = ImageForm
     template_name = 'image_upload.html'
@@ -64,17 +52,6 @@ class ImageUploadView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class VueAppView(View):
-    def get(self, request, *args, **kwargs):
-        elements = Element.objects.all()
-        entities = Entity.objects.all()
-        data = {
-            'elements': [{'element_type': e.element_type, 'image_url': e.image.url} for e in elements],
-            'entities': [{'entity_type': e.entity_type, 'image_url': e.image.url} for e in entities]
-        }
-        return JsonResponse(data)
-
-
 class ElementalsWarView(View):
     def get(self, request, *args, **kwargs):
         player = Player.objects.first()
@@ -96,8 +73,6 @@ class ElementalsWarView(View):
         cache.set('stack', stack)
 
         return JsonResponse({'board': serialized_board, 'player': serialized_player})
-
-
 
 
 class UpdateHandView(View):
