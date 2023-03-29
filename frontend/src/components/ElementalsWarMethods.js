@@ -36,7 +36,7 @@ async function clearPlayerHand() {
         }
       }
 
-function flipCard(index) {
+function flipCard(index, computerMove) {
       const card = this.elements[index];
 
       if (card.flipped || this.flippedCards.includes(card) || this.flippedCards.length === 2) {
@@ -48,7 +48,9 @@ function flipCard(index) {
 
       if (this.flippedCards.length === 2) {
         setTimeout(() => {
-          this.compareCards();
+            this.compareCards(() => {
+                computerMove.call(this);
+            });
         }, 1000);
       }
     }
@@ -71,7 +73,7 @@ async function updatePlayerHand(element) {
         }
       }
 
-async function compareCards() {
+async function compareCards(callback) {
       if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
         this.matchedPairs.push(...this.flippedCards);
         for (const card of this.flippedCards) {
@@ -84,9 +86,11 @@ async function compareCards() {
         } catch (error) {
           console.error('Error fetching new board data:', error);
           }
-        setTimeout(() =>{
-            computerMove.call(this);
-        }, 1000);
+        if (typeof callback === 'function'){
+            setTimeout(() =>{
+                callback.call(this);
+            }, 1000);
+        }
       }
   this.flippedCards.forEach((card) => {
     card.flipped = false;

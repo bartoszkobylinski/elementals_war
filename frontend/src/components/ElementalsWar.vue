@@ -2,7 +2,7 @@
   <div>
     <div class="board">
       <div class="element-wrapper" v-for="(element, index) in elements" :key="index">
-        <element-card :element="element" @card-click="flipCard(index)" />
+        <element-card :element="element" @card-click="flipCard(index, computerMove)" />
       </div>
     </div>
     <div class="player-hand">
@@ -51,8 +51,8 @@ import {
   compareCards,
   getCsrfToken,
   groupedEntities,
-    exchangeCards,
-  } from "@/components/ElementalsWarMethods";
+  exchangeCards, computerMove,
+} from "@/components/ElementalsWarMethods";
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
@@ -81,6 +81,7 @@ export default {
     };
   },
   methods: {
+    computerMove,
     clearPlayerHand,
     flipCard,
     updatePlayerHand,
