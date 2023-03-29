@@ -36,24 +36,24 @@ async function clearPlayerHand() {
         }
       }
 
-function flipCard(index, computerMove) {
-      const card = this.elements[index];
 
-      if (card.flipped || this.flippedCards.includes(card) || this.flippedCards.length === 2) {
-        return;
-      }
+async function flipCard(index, computerMove) {
+  const card = this.elements[index];
 
-      card.flipped = true;
-      this.flippedCards.push(card);
+  if (!this.canFlip || card.flipped || this.flippedCards.includes(card) || this.flippedCards.length === 2) {
+    return;
+  }
 
-      if (this.flippedCards.length === 2) {
-        setTimeout(() => {
-            this.compareCards(() => {
-                computerMove.call(this);
-            });
-        }, 1000);
-      }
-    }
+  card.flipped = true;
+  this.flippedCards.push(card);
+
+  if (this.flippedCards.length === 2) {
+    this.canFlip = false;
+    await this.compareCards();
+    await computerMove.call(this);
+  }
+}
+
 
 async function updatePlayerHand(element) {
       try {
@@ -73,30 +73,29 @@ async function updatePlayerHand(element) {
         }
       }
 
-async function compareCards(callback) {
-      if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
-        this.matchedPairs.push(...this.flippedCards);
-        for (const card of this.flippedCards) {
-          await this.updatePlayerHand(card);
-          }
+async function compareCards() {
+  if (this.flippedCards[0].fields.element_type === this.flippedCards[1].fields.element_type) {
+    this.matchedPairs.push(...this.flippedCards);
+    for (const card of this.flippedCards) {
+      await this.updatePlayerHand(card);
+    }
 
-      try {
-        const response = await this.$http.get('http://localhost:8000/api/board/');
-        this.elements = response.data.flat();
-        } catch (error) {
-          console.error('Error fetching new board data:', error);
-          }
-        if (typeof callback === 'function'){
-            setTimeout(() =>{
-                callback.call(this);
-            }, 1000);
-        }
-      }
+    try {
+      const response = await this.$http.get('http://localhost:8000/api/board/');
+      this.elements = response.data.flat();
+    } catch (error) {
+      console.error('Error fetching new board data:', error);
+    }
+  }
+
   this.flippedCards.forEach((card) => {
     card.flipped = false;
   });
   this.flippedCards = [];
+
+  this.canFlip = true;
 }
+
 
 function getCsrfToken() {
       return csrfToken;
@@ -142,26 +141,29 @@ async function exchangeCards() {
     this.player.hand.push({fields: {image: imageURL, entity_type: elementType}});
 }
 
-async function computerMove(){
-    const index1 = getRandomIndex(this.elements);
-    const index2 = getRandomIndex(this.elements, index1);
+async function computerMove() {
+  const index1 = getRandomIndex(this.elements);
+  const index2 = getRandomIndex(this.elements, index1);
 
-    const element1 = this.elements[index1];
-    element1.flipped = true;
+  const element1 = this.elements[index1];
+  element1.flipped = true;
 
-    setTimeout(() => {
-        const element2 = this.elements[index2];
-        element2.flipped = true;
+  setTimeout(async () => {
+    const element2 = this.elements[index2];
+    element2.flipped = true;
 
-        setTimeout(() => {
-            if (element1.fields.element_type === element2.fields.element_type){
-                this.computer.hand.push(element1, element2);
-            }
-            element1.flipped = false;
-            element2.flipped = false;
-        }, 1000);
-    }, 500);
+    this.flippedCards.push(element1, element2);
+
+    await this.compareCards();
+
+    if (element1.fields.element_type === element2.fields.element_type) {
+      this.computer.hand.push(element1, element2);
+    }
+
+    this.flippedCards = [];
+  }, 500);
 }
+
 
 function getRandomIndex(elements, excludeIndex) {
     let randomIndex;

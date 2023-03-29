@@ -78,6 +78,8 @@ export default {
       flippedCards: [],
       matchedPairs: [],
       selectedCards: [],
+      canFlip: true,
+      playerTurn: true,
     };
   },
   methods: {
