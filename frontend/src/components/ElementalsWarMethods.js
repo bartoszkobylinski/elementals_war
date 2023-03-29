@@ -84,6 +84,9 @@ async function compareCards() {
         } catch (error) {
           console.error('Error fetching new board data:', error);
           }
+        setTimeout(() =>{
+            computerMove.call(this);
+        }, 1000);
       }
   this.flippedCards.forEach((card) => {
     card.flipped = false;
@@ -135,6 +138,15 @@ async function exchangeCards() {
     this.player.hand.push({fields: {image: imageURL, entity_type: elementType}});
 }
 
+async function computerMove(){
+    const availableCards = this.elements.filter((card) => !card.flipped && !this.matchedPairs.includes(card));
+    if (availableCards.length === 0){
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * availableCards.length);
+    const selectedCard = availableCards[randomIndex];
+    selectedCard.flipped = true;
+}
 async function fetchEntityImageURL(entityType) {
     console.log('groupedEntities called');
   try {
