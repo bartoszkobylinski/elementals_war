@@ -139,13 +139,32 @@ async function exchangeCards() {
 }
 
 async function computerMove(){
-    const availableCards = this.elements.filter((card) => !card.flipped && !this.matchedPairs.includes(card));
-    if (availableCards.length === 0){
-        return;
-    }
-    const randomIndex = Math.floor(Math.random() * availableCards.length);
-    const selectedCard = availableCards[randomIndex];
-    selectedCard.flipped = true;
+    const index1 = getRandomIndex(this.elements);
+    const index2 = getRandomIndex(this.elements, index1);
+
+    const element1 = this.elements[index1];
+    element1.flipped = true;
+
+    setTimeout(() => {
+        const element2 = this.elements[index2];
+        element2.flipped = true;
+
+        setTimeout(() => {
+            if (element1.fields.element_type === element2.fields.element_type){
+                this.computer.hand.push(element1, element2);
+            }
+            element1.flipped = false;
+            element2.flipped = false;
+        }, 1000);
+    }, 500);
+}
+
+function getRandomIndex(elements, excludeIndex) {
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() *elements.length);
+    } while (randomIndex === excludeIndex);
+    return randomIndex;
 }
 async function fetchEntityImageURL(entityType) {
     console.log('groupedEntities called');
@@ -174,4 +193,6 @@ export {
     getCsrfToken,
     groupedEntities,
     exchangeCards,
+    getRandomIndex,
+    computerMove,
 };
