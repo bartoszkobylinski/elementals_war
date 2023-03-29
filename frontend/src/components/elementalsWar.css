@@ -1,0 +1,68 @@
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 45%;
+  margin: 0 auto;
+  border: 1px solid black;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.element-wrapper {
+  flex-basis: calc(33.33% - 10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.player-hand {
+  margin-top: 20px;
+  text-align: center;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.player-hand-elements {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player-hand .element-wrapper {
+  flex-basis: calc(10% - 10px);
+  margin: 15px;
+}
+
+.player-hand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+.player-hand p {
+  margin-top: 20px;
+}
+.computer-hand {
+  margin-top: 20px;
+  text-align: center;
+  width: 70%;
+}
+.computer-hand-elements {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.computer-hand .element-wrapper {
+  flex-basis: calc(10% - 10px);
+  margin: 15px;
+}
+.computer-hand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+.computer-hand p {
+  margin-top: 20px;
+}
