@@ -82,7 +82,7 @@ async function compareCards(callback) {
 
       try {
         const response = await this.$http.get('http://localhost:8000/api/board/');
-        this.elements = response.data.board.flat();
+        this.elements = response.data.flat();
         } catch (error) {
           console.error('Error fetching new board data:', error);
           }
